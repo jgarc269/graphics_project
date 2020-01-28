@@ -20,18 +20,18 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
         // no intersection
         h.dist = 0;
         h.part = 0;
-	h.object = this;
+		h.object = this;
     }
     else if(discrim == 0)
     {
-	h.dist = -b;
-	h.part = 0;
-	h.object = this;
+		h.dist = -b;
+		h.part = 0;
+		h.object = this;
     }
     else
     {
      	double t1 = (-b + sqrt(discrim) / (2.0 * a));
-	double t2 = (-b - sqrt(discrim) / (2.0 * a));
+		double t2 = (-b - sqrt(discrim) / (2.0 * a));
 	
 	if(t1 < 0 && t2 < 0)
 	{
@@ -77,7 +77,8 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
 vec3 Sphere::Normal(const vec3& point, int part) const
 {
     vec3 normal;
-    TODO; // compute the normal direction
+    //TODO; // compute the normal direction
+    normal = (point - center) / radius;
     return normal;
 }
 
