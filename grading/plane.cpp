@@ -14,16 +14,15 @@ Hit Plane::Intersection(const Ray& ray, int part) const
 
     if(dot(ray.direction, normal) == 0)
     {
-	 h.dist = 0;
+	     h.dist = 0;
          h.object = NULL;
          h.part = part;
     }
     else
     {
-	
     	t = dot((x1 - ray.endpoint), normal) / dot(ray.direction, normal);
 	
-        if(t > 0)
+        if(t > small_t)
         {
             h.dist = t;
             h.object = this;

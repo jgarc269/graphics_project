@@ -20,12 +20,12 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
         // no intersection
         h.dist = 0;
         h.part = 0;
-		h.object = this;
+		h.object = NULL;
     }
     else if(discrim == 0)
     {
 		h.dist = -b;
-		h.part = 0;
+		h.part = part;
 		h.object = this;
     }
     else
@@ -36,37 +36,37 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
 	if(t1 < 0 && t2 < 0)
 	{
 	    h.dist = 0;
-	    h.part = 0;
-	    h.object = this;
+	    h.part = part;
+	    h.object = NULL;
 	}
-	else if (t1 > 0)
+	else if (t1 < 0)
 	{
 	    h.dist = t2;
-	    h.part = 0;
+	    h.part = part;
 	    h.object = this;
 	}
-	else if(t2 > 0)
+	else if(t2 < 0)
 	{
 	    h.dist = t1;
-	    h.part = 0;
+	    h.part = part;
 	    h.object = this;
 	}
 	else if(t1 > t2)
 	{
 	    h.dist = t2;
-            h.part = 0;
+            h.part = part;
 	    h.object = this;
 	}
 	else if(t1 < t2)
 	{
 	    h.dist = t1;
-	    h.part = 0;
+	    h.part = part;
 	    h.object = this;
 	}
 	else
 	{
 	    h.dist = t2;
-	    h.part = 0;
+	    h.part = part;
 	    h.object = this;
 	}
     }
