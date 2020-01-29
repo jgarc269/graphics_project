@@ -9,10 +9,10 @@
 Hit Plane::Intersection(const Ray& ray, int part) const
 {
     //TODO;
-    Hit h = {NULL, 0, part};
+    Hit h;
     double t = 0; 
 
-    if(dot(ray.direction, normal) == 0)
+    if(fabs(dot(ray.direction, normal)) <small_t)
     {
 	     h.dist = 0;
          h.object = NULL;

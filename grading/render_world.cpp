@@ -24,14 +24,13 @@ Hit Render_World::Closest_Intersection(const Ray& ray)
 {
     //TODO;
     double min_t = std::numeric_limits<double>::max();
-    Hit h;
     Hit r_hit = {NULL, 0, 0};
     
     for(unsigned i = 0; i < objects.size(); i++)
     {
-        h = objects.at(i)->Intersection(ray, h.part);
+        Hit h = objects.at(i)->Intersection(ray, -1);
         
-        if(h.dist < min_t && h.dist >= small_t)
+        if(h.object && h.dist < min_t)
         {
              r_hit = h;
              min_t = h.dist;
@@ -79,7 +78,7 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
     }
     else
     {
-        color = background_shader->Shade_Surface(ray, ray.direction, ray.direction, recursion_depth);
+        color = background_shader->Shade_Surface(ray, temp1, temp2, recursion_depth);
     }
     
     return color;

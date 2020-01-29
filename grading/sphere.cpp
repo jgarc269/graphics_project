@@ -6,32 +6,28 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
 {
     //TODO;
     Hit h;
-    double a = 0;
-    double b = 0;
-    double c = 0;
-    a = dot(ray.direction, ray.direction);
-    b = 2.0 * dot(ray.direction,(ray.endpoint - center));
-    c = dot((ray.endpoint - center),(ray.endpoint - center)) - (radius * radius);
+    double b = 2.0 * dot(ray.direction,(ray.endpoint - center));
+    double c = dot((ray.endpoint - center),(ray.endpoint - center)) - (radius * radius);
     
-    double discrim = b*b - 4*a*c;
+    double discrim = b*b - 4*c;
     
-    if(discrim < 0)
+    if(discrim <= 0)
     {
         // no intersection
         h.dist = 0;
         h.part = 0;
-		h.object = NULL;
+	h.object = NULL;
+
+	return h;
     }
-    else if(discrim == 0)
-    {
-		h.dist = -b;
-		h.part = part;
-		h.object = this;
-    }
-    else
-    {
-     	double t1 = (-b + sqrt(discrim) / (2.0 * a));
-		double t2 = (-b - sqrt(discrim) / (2.0 * a));
+//    else if(discrim == 0)
+//    {
+//		h.dist = -b;
+//		h.part = part;
+//		h.object = this;
+//    }
+    double t1 = (-b + sqrt(discrim)) / 2.0;
+    double t2 = (-b - sqrt(discrim)) / 2.0;
 	
 	if(t1 < 0 && t2 < 0)
 	{
@@ -69,7 +65,6 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
 	    h.part = part;
 	    h.object = this;
 	}
-    }
     
     return h;
 }

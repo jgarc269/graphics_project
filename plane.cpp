@@ -12,7 +12,7 @@ Hit Plane::Intersection(const Ray& ray, int part) const
     Hit h;
     double t = 0; 
 
-    if(dot(ray.direction, normal) == 0)
+    if(fabs(dot(ray.direction, normal)) <small_t)
     {
 	     h.dist = 0;
          h.object = NULL;
