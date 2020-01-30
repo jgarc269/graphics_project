@@ -16,16 +16,11 @@ Hit Sphere::Intersection(const Ray& ray, int part) const
         // no intersection
         h.dist = 0;
         h.part = 0;
-	h.object = NULL;
+	    h.object = NULL;
 
-	return h;
+		return h;
     }
-//    else if(discrim == 0)
-//    {
-//		h.dist = -b;
-//		h.part = part;
-//		h.object = this;
-//    }
+
     double t1 = (-b + sqrt(discrim)) / 2.0;
     double t2 = (-b - sqrt(discrim)) / 2.0;
 	
