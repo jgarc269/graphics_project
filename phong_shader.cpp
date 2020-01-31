@@ -13,6 +13,7 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
     {
         vec3 temp = world.lights[i]->position - intersection_point;
         color = color + this->color_diffuse * world.lights[i]->Emitted_Light(temp) * std::max(dot(normal, temp.normalized()), 0.0);
+        color = color + color_ambient + color_diffuse + color_specular;
     }
     return color;
 
