@@ -8,7 +8,7 @@
 // to record a hit with t=0 as the first entry in hits.
 Hit Plane::Intersection(const Ray& ray, int part) const
 {
-    //TODO;
+    
     Hit h;
     double t = 0; 
 
