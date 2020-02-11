@@ -9,6 +9,7 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
     const vec3& normal,int recursion_depth) const
 {
     vec3 color;
+    Hit hit_shadow = {NULL, 0, 0};
 
     vec3 a_color = this->color_ambient * world.ambient_color * world.ambient_intensity;
     color = color + a_color;
@@ -17,36 +18,26 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
          {
 
             vec3 li = world.lights[i]->position - intersection_point;
-	    
-	    Ray shadow(intersection_point, li);
 
-	    Hit hit_shadow = world.Closest_Intersection(shadow);
-	    
-	    if(world.enable_shadows == true)
+	    if(world.enable_shadows)
 	      {
-
-		if(!hit_shadow.object || hit_shadow.dist > li.magnitude())
-		  {
-		    vec3 d_color = d_color + this->color_diffuse * world.lights[i]->Emitted_Light(li) * std::max(dot(normal, li.normalized()), 0.0);
-
-		    vec3 r = -li + 2 * dot(li,normal) * normal;
-
-		    vec3 s_color = s_color + this->color_specular * world.lights[i]->Emitted_Light(li) * std::pow(std::max(dot(-ray.direction, r.normalized()), 0.0), specular_power);
-
-		    color = color + d_color + s_color;
-		  }
+		    Ray shadow(intersection_point, li);
+ 	   	    hit_shadow = world.Closest_Intersection(shadow);
+		
 	      }
-	    else
-		{
-		    vec3 d_color = d_color + this->color_diffuse * world.lights[i]->Emitted_Light(li) * std::max(dot(normal, li.normalized()), 0.0);
+	
+	    if(hit_shadow.dist < li.magnitude() && hit_shadow.dist >= small_t)
+	    {
+		continue;
+	    }
+	 
+	        vec3 d_color = d_color + this->color_diffuse * world.lights[i]->Emitted_Light(li) * std::max(dot(normal, li.normalized()), 0.0);
 
-		    vec3 r = -li + 2 * dot(li,normal) * normal;
+		vec3 r = -li + 2 * dot(li,normal) * normal;
 
-		    vec3 s_color = s_color + this->color_specular * world.lights[i]->Emitted_Light(li) * std::pow(std::max(dot(-ray.direction, r.normalized()), 0.0), specular_power);
+		vec3 s_color = s_color + this->color_specular * world.lights[i]->Emitted_Light(li) * std::pow(std::max(dot(-ray.direction, r.normalized()), 0.0), specular_power);
 
-		    color = color + d_color + s_color;
-
-		}
+		color = color + d_color + s_color;
 	    
 	 }
       

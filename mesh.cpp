@@ -3,7 +3,6 @@
 #include <string>
 #include <limits>
 
-#include "plane.h"
 // Consider a triangle to intersect a ray if the ray intersects the plane of the
 // triangle with barycentric weights in [-weight_tolerance, 1+weight_tolerance]
 static const double weight_tolerance = 1e-4;
@@ -45,43 +44,43 @@ Hit Mesh::Intersection(const Ray& ray, int part) const
 {
   // TODO;
     
-    Hit hit = {NULL, -1, 0};
-    double min = 0;
+    Hit intersection = {NULL, 0, 0};
+    double min_t = std::numeric_limits<double>::max();
     double distance = 0;
-    bool miss = true;
     
-    for(size_t p = 0; p < this->triangles.size(); p++)
+    if(part < 0)
     {
-	if(this->Intersect_Triangle(ray, p, distance))
+	for(unsigned int i = 0; i < triangles.size(); i++)
 	{
-	    if(miss)
-	    {
-		miss = false;
-		min = distance;
-		hit.part = p;
-	    }
+		if(Intersect_Triangle(ray, i, distance))
+		{
+		    if(distance < min_t)
+		    {
+			min_t = distance;
+			intersection.object = this;
+			intersection.dist = distance;
+			intersection.part = i;
+		    }
+		}
 	}
     }
 
-	hit.object = this;
-	hit.dist = min;
-
-    return hit;
+    return intersection;
 }
 
 // Compute the normal direction for the triangle with index part.
 vec3 Mesh::Normal(const vec3& point, int part) const
 {
     assert(part>=0);
-    //TODO;
+	 
+    ivec3 current = triangles[part];
+    vec3 u = vertices[current[1]] - vertices[current[0]];
+    vec3 v = vertices[current[2]] - vertices[current[0]];
 
-    vec3 u = this->vertices[this->triangles[part][1]] - this->vertices[this->triangles[part][0]];
-    vec3 v = this->vertices[this->triangles[part][2]] - this->vertices[this->triangles[part][0]];
-
-   // vec3 new_vec = cross(u,v);
-    //new_vec.normalized();
-	return cross(u,v).normalized();
-   // return new_vec;
+    vec3 new_vec = cross(u,v);
+    new_vec.normalized();
+	
+    return new_vec;
 }
 
 // This is a helper routine whose purpose is to simplify the implementation
@@ -98,7 +97,7 @@ vec3 Mesh::Normal(const vec3& point, int part) const
 // two triangles.
 bool Mesh::Intersect_Triangle(const Ray& ray, int tri, double& dist) const
 {
-    
+   /* 
    Hit hit = Plane(vertices[triangles[tri][0]], Normal(vertices[triangles[tri][0]],tri)).Intersection(ray,tri);
 
    double distance = dot(cross(ray.direction, (vertices[triangles[tri][1]] - vertices[triangles[tri][0]])), vertices[triangles[tri][2]] - vertices[triangles[tri][0]]);
@@ -115,7 +114,7 @@ bool Mesh::Intersect_Triangle(const Ray& ray, int tri, double& dist) const
 	dist = hit.dist;
 	return true;
    }
-
+*/
    return false;
  
 }
