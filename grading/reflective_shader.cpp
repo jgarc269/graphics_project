@@ -8,5 +8,11 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 {
     vec3 color;
    // TODO; // determine the color
+
+    for(unsigned int i = 0; i < world.lights.size(); i++)
+    {
+//	color = 
+    }
+
     return color;
 }
