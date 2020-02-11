@@ -45,17 +45,32 @@ Hit Mesh::Intersection(const Ray& ray, int part) const
   // TODO;
     
     Hit intersection = {NULL, 0, 0};
-    //double min_t = std::numeric_limits<double>::max();
-   // double distance = 0;
+    double min_t = std::numeric_limits<double>::max();
+    double distance = 0;
     
     if(part < 0)
     {
 	for(unsigned int i = 0; i < triangles.size(); i++)
 	{
-		//if(Intersect_Triangle(ray, i, dist))
-		//{
-			
-		//}
+		if(Intersect_Triangle(ray, i, distance))
+		{
+		    if(distance < min_t)
+		    {
+			min_t = distance;
+			intersection.object = this;
+			intersection.dist = distance;
+			intersection.part = i;
+		    }
+		}
+	}
+    }
+    else
+    {
+	if(Intersect_Triangle(ray, part, distance))
+	{
+	    intersection.object = this;
+	    intersection.dist = distance;
+	    intersection.part = part;
 	}
     }
 
@@ -66,16 +81,12 @@ Hit Mesh::Intersection(const Ray& ray, int part) const
 vec3 Mesh::Normal(const vec3& point, int part) const
 {
     assert(part>=0);
-    //TODO;
-	/*
-    ivec current_triangle = triangles[part];
-    vec3 u = vertices[current_triangles[part][1]] - vertices[current_triangles[part][0]];
-    vec3 v = vertices[current_triangles[part][2]] - vertices[current_triangles[part][0]];
-
-    vec3 new_vec = cross(u,v);
-    new_vec.normalized();
-	*/
-    return {};
+	 
+    ivec3 current = triangles[part];
+    vec3 u = vertices[current[1]] - vertices[current[0]];
+    vec3 v = vertices[current[2]] - vertices[current[0]];
+	
+    return cross(u,v).normalized();
 }
 
 // This is a helper routine whose purpose is to simplify the implementation
@@ -92,26 +103,34 @@ vec3 Mesh::Normal(const vec3& point, int part) const
 // two triangles.
 bool Mesh::Intersect_Triangle(const Ray& ray, int tri, double& dist) const
 {
-   /* 
-   Hit hit = Plane(vertices[triangles[tri][0]], Normal(vertices[triangles[tri][0]],tri)).Intersection(ray,tri);
 
-   double distance = dot(cross(ray.direction, (vertices[triangles[tri][1]] - vertices[triangles[tri][0]])), vertices[triangles[tri][2]] - vertices[triangles[tri][0]]);
+   ivec3 p = triangles[tri];
 
-   //a = alpha b = beta g = gamma
-   double b = dot(cross(vertices[triangles[tri][2]] - vertices[triangles[tri][0]], ray.direction), ray.Point(dist) - vertices[triangles[tri][0]]) / distance;
-     
-   double g = dot(cross(ray.direction, vertices[triangles[tri][1]] - vertices[triangles[tri][0]]), ray.Point(dist) - vertices[triangles[tri][0]]) / distance;
-   double a = 1 - (g + b);
+   vec3 A = vertices[p[1]] - vertices[p[0]];
+   vec3 B = vertices[p[2]] - vertices[p[0]];
+   vec3 C = ray.endpoint - vertices[triangles[tri][0]];
 
+   vec3 direction = ray.direction;
+   
+   // a = alpha
+   // b = beta
+   // g = gamma
 
-   if(a > -weight_tol && b > -weight_tol && g > -weight_tol)
+   double b = dot(cross(direction, B), C) / dot(cross(direction, B), A);
+   double g = dot(cross(direction, A), C) / dot(cross(direction, A), B);
+   double a = 1 - b - g; 
+
+   if(dot(direction, this->Normal(direction,tri)) == 0)
+	return false;
+
+   dist = -dot(cross(A,B), C) / dot(cross(A,B), direction);
+
+   if((a < -weight_tol || b < -weight_tol || g < -weight_tol) || dist < small_t)
    {
-	dist = hit.dist;
-	return true;
+	return false;
    }
-*/
-   return false;
- 
+
+   return true;
 }
 
 // Compute the bounding box.  Return the bounding box of only the triangle whose
